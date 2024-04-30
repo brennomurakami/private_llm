@@ -66,3 +66,16 @@ toggleBtn.addEventListener('click', () => {
 userInput.addEventListener('keypress', handleUserMessage);
 
 });
+
+function handleCardClick(cardId) {
+    // Lógica para lidar com o clique no card
+    console.log("Card clicado:", cardId);
+}
+
+function deletar(){
+    console.log("deletou")
+}
+
+function alterar(){
+    console.log("alterou")
+}
