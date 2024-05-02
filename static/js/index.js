@@ -6,6 +6,7 @@ const toggleBtn = document.getElementById('toggle-btn');
 const sidebar = document.getElementById('sidebar');
 const enviarBtn = document.getElementById('send-btn');
 enviarBtn.addEventListener('click', handleUserMessage);
+const centralText = document.getElementById('central-content');
 
 // Função para adicionar mensagem do usuário à interface
 function addUserMessage(message) {
@@ -30,6 +31,7 @@ function handleUserMessage(event) {
         if (pergunta == '') {
             return
         }
+        centralText.style.display = 'none';
         addUserMessage(pergunta);
 
         // Envia a pergunta para o servidor

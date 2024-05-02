@@ -35,6 +35,16 @@ body{
     background-color: var(--outgoing-chat-bg);
 }
 
+
+.central-content{
+    text-align: center;
+}
+
+.central-content img{
+    width: 130px; /* Defina a largura desejada */
+    height: auto;
+}
+
 #card-op span{
     display: inline-block;
 }
@@ -183,7 +193,6 @@ body{
     padding: 20px 10px;
     justify-content: center;
     background: var(--outgoing-chat-bg);
-    border-top: 1px solid var(--incoming-chat-border);
 }
 
 .typing-container .typing-content{
