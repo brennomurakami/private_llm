@@ -79,6 +79,7 @@ body{
     background-color: #333;
     overflow-x: hidden;
     transition: 0.5s;
+    z-index: 1000;
 }
 
 .sidebar-content {
@@ -86,13 +87,13 @@ body{
     color: white;
 }
 
-.menuBtn{
+/* .menuBtn{
     margin-right: 7px;
     font-size: 1.4rem;
     background: var(--incoming-chat-bg);
     outline: 1px solid var(--incoming-chat-border);
     border-radius: 4px;
-}
+} */
 
 #toggle-btn {
     cursor: pointer; /* Torna o botão clicável */
