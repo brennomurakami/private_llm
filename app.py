@@ -15,7 +15,7 @@ from models.conversa import Conversa
 app = Flask(__name__)
 
 # Configurações do banco de dados
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:28072003xennox@localhost/llm'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:p3o4s2t1@localhost/llm'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializa o banco de dados com o aplicativo Flask
@@ -42,11 +42,10 @@ def gerar_resposta():
 @app.route('/salvar-card', methods=['POST'])
 def salvar_card():
     data = request.json
-    card_id = data['card_id']
     nome_card = data['nome_card']
 
     # Salva o ID do card no banco de dados
-    conversa = Conversa(idconversa=card_id, nome_conversa=nome_card)
+    conversa = Conversa(nome_conversa=nome_card)
     db.session.add(conversa)
     db.session.commit()
     print("SALVO")

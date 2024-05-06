@@ -3,6 +3,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
+    transition: 0.5s;
 }
 
 :root{
@@ -123,6 +124,7 @@ body{
 .card p{
     display: inline;
     margin: 0;
+    color: var(--text-color);
 }
 
 .card:hover {
@@ -203,7 +205,6 @@ body{
     color: var(--message-color); /* Cor do texto das mensagens do usuário */
 }
 
-
 .bot-message {
     align-self: flex-start; /* Alinhar as mensagens da IA à esquerda */
     background-color: #137c13; /* Cor de fundo das mensagens da IA */
@@ -216,6 +217,11 @@ body{
 .bot-message p{
     margin: 10px;
     color: var(--message-color); /* Cor do texto das mensagens da IA */
+}
+
+.bot-message li{
+    margin: 10px;
+    color: var(--message-color);
 }
 
 .bot-message li{

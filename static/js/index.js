@@ -98,13 +98,12 @@ function alterar(){
 }
 
 function criarCard() {
-    contador++; // Incrementa o contador para gerar um novo ID único para o card
-    let nomeCard = 'Chat ' + contador;
+    let nomeCard = 'Novo chat';
     const novoCard = document.createElement('div');
     novoCard.classList.add('card');
     novoCard.setAttribute('id', 'card' + contador); // Define o ID único para o novo card
     novoCard.innerHTML = `
-        <p>Chat ${contador}</p>
+        <p>${nomeCard}</p>
         <div id="card-op">
             <span class="material-symbols-outlined" onclick="alterar()" id="edit">edit</span>
             <span class="material-symbols-outlined" onclick="deletar(this)" id="delete">delete</span>
@@ -118,7 +117,7 @@ function criarCard() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ card_id: contador, nome_card: nomeCard })
+        body: JSON.stringify({nome_card: nomeCard })
     })
     .then(response => {
         if (!response.ok) {
