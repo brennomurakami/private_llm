@@ -2,9 +2,15 @@ from flask import Flask, render_template, request, jsonify
 import google.generativeai as genai
 import sys
 import os
+from dotenv import load_dotenv
 
 # Adiciona o diretório raiz do projeto ao caminho de pesquisa de módulos
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+load_dotenv()
+
+# key = os.getenv('API_KEY')
+database_url = os.getenv('DATABASE_URL')
 
 # Importa e inicializa os modelos
 from models.conta import db
@@ -15,7 +21,7 @@ from models.conversa import Conversa
 app = Flask(__name__)
 
 # Configurações do banco de dados
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:p3o4s2t1@localhost/llm'
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializa o banco de dados com o aplicativo Flask

@@ -27,7 +27,7 @@ body, .message p, textarea::placeholder, .material-symbols-rounded, .message li 
     --icon-color: #A9A9BC;
     --icon-hover-bg: #FAFAF3;
     --placeholder-color: #6C6C6C;
-    --outgoing-chat-bg: #f3f3f3;
+    --outgoing-chat-bg: #dbdbdb;
     --incoming-chat-bg: #F7F7F8;
     --outgoing-chat-border: #f3f3f3;
     --incoming-chat-border: #D9D9E3;
