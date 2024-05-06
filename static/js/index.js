@@ -71,8 +71,9 @@ toggleBtn.addEventListener('click', () => {
 userInput.addEventListener('keypress', handleUserMessage);
 
 });
-
+const themeBtn = document.getElementById('theme-btn');
 const chats = document.getElementById('chats');
+const body = document.querySelector('body');
 let contador = 0;
 
 function handleCardClick(cardId) {
@@ -108,4 +109,23 @@ function criarCard() {
         </div>
     `;
     chats.appendChild(novoCard);
+}
+
+function toggleTheme() {
+    // Verifica se a classe 'light-mode' está presente no body
+    var isLightMode = body.classList.contains('light-mode');
+
+    // Se estiver no modo claro, alterna para o modo escuro; caso contrário, alterna para o modo claro
+    if (isLightMode) {
+        body.classList.remove('light-mode');
+        // Adicione a classe 'dark-mode' para ativar o modo escuro
+        body.classList.add('dark-mode');
+        themeBtn.textContent = 'light_mode'
+    } else {
+        // Remove a classe 'dark-mode' para desativar o modo escuro
+        body.classList.remove('dark-mode');
+        // Adicione a classe 'light-mode' para ativar o modo claro
+        body.classList.add('light-mode');
+        themeBtn.textContent = 'dark_mode'
+    }
 }
