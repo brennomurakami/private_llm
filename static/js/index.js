@@ -76,6 +76,33 @@ const themeBtn = document.getElementById('theme-btn');
 const chats = document.getElementById('chats');
 const body = document.querySelector('body');
 let contador = 0;
+// Obtém o modal
+let modal = document.getElementById('modal');
+// Obtém o botão de fechar
+let closeBtn = document.getElementsByClassName('close')[0];
+// Obtém o botão de confirmar dentro do modal
+let confirmarBtn = document.getElementById('confirmar-btn');
+
+function mostrarModal() {
+    modal.style.display = 'block';
+}
+
+closeBtn.onclick = function() {
+    modal.style.display = 'none';
+}
+
+// Função para fechar o modal ao clicar fora dele
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+
+confirmarBtn.onclick = function() {
+    // Aqui você pode adicionar lógica para enviar o novo nome do card para o servidor
+    // e fechar o modal após confirmar a alteração
+    modal.style.display = 'none'; // Fecha o modal
+}
 
 function handleCardClick(cardId) {
     // Lógica para lidar com o clique no card
@@ -114,8 +141,9 @@ function deletar(card){
     });
 }
 
-function alterar(){
-    console.log("alterou")
+function alterar(card){
+    cardId = card.parentNode.parentNode.id;
+    mostrarModal();
 }
 
 function criarCard() {
@@ -147,7 +175,7 @@ function criarCard() {
         novoCard.innerHTML = `
             <p>${nomeCard}</p>
             <div id="card-op">
-                <span class="material-symbols-outlined" onclick="alterar()" id="edit">edit</span>
+                <span class="material-symbols-outlined" onclick="alterar(this)" id="edit">edit</span>
                 <span class="material-symbols-outlined" onclick="deletar(this)" id="delete">delete</span>
             </div>
         `;
@@ -168,11 +196,11 @@ function carregarCards() {
             cards.forEach(card => {
                 const novoCard = document.createElement('div');
                 novoCard.classList.add('card');
-                novoCard.setAttribute('id', 'card' + card.idconversa); // Define o ID do card
+                novoCard.setAttribute('id', card.idconversa); // Define o ID do card
                 novoCard.innerHTML = `
                     <p>${card.nome_conversa}</p>
                     <div id="card-op">
-                        <span class="material-symbols-outlined" onclick="alterar()" id="edit">edit</span>
+                        <span class="material-symbols-outlined" onclick="alterar(this)" id="edit">edit</span>
                         <span class="material-symbols-outlined" onclick="deletar(this)" id="delete">delete</span>
                     </div>
                 `;

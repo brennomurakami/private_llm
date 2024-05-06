@@ -13,7 +13,7 @@
     --placeholder-color: #DCDCDC;
     --outgoing-chat-bg: #2c2d30;
     --incoming-chat-bg: #444654;
-    --outgoing-chat-border: #343541;
+    --outgoing-chat-border: #2c2d30;
     --incoming-chat-border: #444654;
     --message-color: #FFFFFF;
 }
@@ -27,9 +27,9 @@ body, .message p, textarea::placeholder, .material-symbols-rounded, .message li 
     --icon-color: #A9A9BC;
     --icon-hover-bg: #FAFAF3;
     --placeholder-color: #6C6C6C;
-    --outgoing-chat-bg: #FFFFFF;
+    --outgoing-chat-bg: #f3f3f3;
     --incoming-chat-bg: #F7F7F8;
-    --outgoing-chat-border: #FFFFFF;
+    --outgoing-chat-border: #f3f3f3;
     --incoming-chat-border: #D9D9E3;
     --message-color: #FFFFFF;
 }
@@ -256,7 +256,7 @@ body{
     display: flex;
     padding: 20px 10px;
     justify-content: center;
-    background: var(--outgoing-chat-bg);
+    background: var(--outgoing-chat-border);
 }
 
 .typing-container .typing-content{
@@ -332,4 +332,79 @@ body{
 #send-btn:hover{
     filter: brightness(1.2);
     cursor: pointer;
+}
+
+/* Estilo do modal */
+.modal {
+    display: none; /* Oculta por padrão */
+    position: fixed; /* Posição fixa */
+    z-index: 1; /* Sobre todas as outras coisas */
+    left: 0;
+    top: 0;
+    width: 100%; /* Largura total */
+    height: 100%; /* Altura total */
+    overflow: auto; /* Rolagem */
+    background-color: rgba(0,0,0,0.4); /* Fundo escuro com transparência */
+}
+
+/* Conteúdo do modal */
+.modal-content {
+    background-color: var(--outgoing-chat-bg); /* Fundo branco */
+    margin: 15% auto; /* Centraliza verticalmente */
+    padding: 10px;
+    border: 1px solid var(--outgoing-chat-border);
+    width: 30%; /* Largura do modal */
+    padding-top: 5px;
+}
+
+/* Botão de fechar */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Estilo para o botão de confirmar */
+#confirmar-btn {
+    background-color: #4CAF50; /* Cor de fundo verde */
+    color: white; /* Cor do texto branco */
+    padding: 10px 20px; /* Espaçamento interno */
+    border: none; /* Sem borda */
+    border-radius: 5px; /* Borda arredondada */
+    cursor: pointer; /* Altera o cursor para indicar interatividade */
+}
+
+/* Altera a cor de fundo quando o mouse passa por cima */
+#confirmar-btn:hover {
+    background-color: #45a049;
+}
+
+/* Altera a cor de fundo quando o botão é pressionado */
+#confirmar-btn:active {
+    background-color: #3e8e41;
+}
+
+/* Estilo para o campo de entrada de texto */
+#novo-nome-input {
+    width: 100%; /* Largura total */
+    padding: 10px; /* Espaçamento interno */
+    margin-bottom: 10px; /* Margem inferior */
+    box-sizing: border-box; /* Inclui padding e borda na largura total */
+    border: 1px solid #ccc; /* Borda cinza */
+    border-radius: 5px; /* Borda arredondada */
+    background-color: var(--incoming-chat-bg);
+}
+
+/* Altera a cor da borda quando o campo de entrada de texto recebe foco */
+#novo-nome-input:focus {
+    border-color: #4CAF50; /* Cor da borda verde */
+    outline: none; /* Remove o contorno padrão do navegador */
 }
