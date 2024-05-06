@@ -10,6 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from models.conta import db
 from models.conversa import db
 from models.historico_conversa import db
+from models.conversa import Conversa
 
 app = Flask(__name__)
 
@@ -37,6 +38,28 @@ def gerar_resposta():
     response = model.generate_content(pergunta)
     resposta = response.text
     return jsonify({'resposta': resposta})
+
+@app.route('/salvar-card', methods=['POST'])
+def salvar_card():
+    data = request.json
+    card_id = data['card_id']
+    nome_card = data['nome_card']
+
+    # Salva o ID do card no banco de dados
+    conversa = Conversa(idconversa=card_id, nome_conversa=nome_card)
+    db.session.add(conversa)
+    db.session.commit()
+    print("SALVO")
+
+    return 'ID do card salvo com sucesso no servidor.'
+
+@app.route('/cards', methods=['GET'])
+def get_cards():
+    cards = Conversa.query.all()  # Consulta todos os cards do banco de dados
+    print("cards")
+    print(cards)
+    cards_data = [{'idconversa': card.idconversa, 'nome_conversa': card.nome_conversa} for card in cards]  # Formata os dados dos cards
+    return jsonify(cards_data)  # Retorna os dados dos cards como JSON
 
 if __name__ == '__main__':
     app.run(debug=True)

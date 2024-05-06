@@ -71,6 +71,7 @@ toggleBtn.addEventListener('click', () => {
 userInput.addEventListener('keypress', handleUserMessage);
 
 });
+
 const themeBtn = document.getElementById('theme-btn');
 const chats = document.getElementById('chats');
 const body = document.querySelector('body');
@@ -98,6 +99,7 @@ function alterar(){
 
 function criarCard() {
     contador++; // Incrementa o contador para gerar um novo ID único para o card
+    let nomeCard = 'Chat ' + contador;
     const novoCard = document.createElement('div');
     novoCard.classList.add('card');
     novoCard.setAttribute('id', 'card' + contador); // Define o ID único para o novo card
@@ -109,7 +111,51 @@ function criarCard() {
         </div>
     `;
     chats.appendChild(novoCard);
+
+     // Envia o ID do card para o servidor Flask
+     fetch('/salvar-card', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ card_id: contador, nome_card: nomeCard })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro ao salvar card no servidor.');
+        }
+        console.log('ID do card enviado com sucesso para o servidor.');
+    })
+    .catch(error => {
+        console.error('Erro ao enviar ID do card para o servidor:', error);
+    });
 }
+
+function carregarCards() {
+    fetch('/cards')
+        .then(response => response.json())
+        .then(cards => {
+            // Para cada card retornado, crie um novo elemento de card no DOM
+            cards.forEach(card => {
+                const novoCard = document.createElement('div');
+                novoCard.classList.add('card');
+                novoCard.setAttribute('id', 'card' + card.idconversa); // Define o ID do card
+                novoCard.innerHTML = `
+                    <p>${card.nome_conversa}</p>
+                    <div id="card-op">
+                        <span class="material-symbols-outlined" onclick="alterar()" id="edit">edit</span>
+                        <span class="material-symbols-outlined" onclick="deletar(this)" id="delete">delete</span>
+                    </div>
+                `;
+                chats.appendChild(novoCard);  // Adiciona o novo card ao contêiner de chats
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao carregar cards do servidor:', error);
+        });
+}
+
+document.addEventListener('DOMContentLoaded', carregarCards);
 
 function toggleTheme() {
     // Verifica se a classe 'light-mode' está presente no body
