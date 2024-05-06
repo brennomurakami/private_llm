@@ -97,26 +97,20 @@ body{
     color: white;
 }
 
-/* .menuBtn{
-    margin-right: 7px;
-    font-size: 1.4rem;
-    background: var(--incoming-chat-bg);
-    outline: 1px solid var(--incoming-chat-border);
-    border-radius: 4px;
-} */
-
 #toggle-btn {
+    position: fixed;
     cursor: pointer; /* Torna o botão clicável */
     display: block; /* Garante que o botão ocupe todo o espaço horizontal */
-    padding: 16px; /* Adiciona algum preenchimento ao redor do botão */
     color: var(--icon-color); /* Define a cor do texto */
     text-align: center; /* Centraliza o texto horizontalmente */
-    height: 55px;
-    width: 55px;
+    width: 40px;
+    bottom: 50%;
+    transition: 0.5s;
+    font-size: 45px;
 }
 
-.menuBtn:hover{
-    filter: brightness(1.2);
+#toggle-btn:hover{
+    filter: brightness(2);
 }
 
 /* Novas regras para ajustar o layout do chat */
@@ -262,4 +256,9 @@ body{
 
 .typing-controls span:hover{
     background: var(--icon-hover-bg);
+}
+
+#send-btn:hover{
+    filter: brightness(1.2);
+    cursor: pointer;
 }

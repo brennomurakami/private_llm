@@ -25,7 +25,7 @@
 </head>
 
 <body>
-    
+    <span class="material-symbols-outlined" id="toggle-btn">chevron_right</span>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-content">
             <p style="text-align: center;">Chats</p>
@@ -60,7 +60,10 @@
         </div>
     </div>
 
-   <div class="chat-container" id="chat-container"></div>
+   <div class="chat-container" id="chat-container">
+    <br>
+    <br>
+   </div>
 
    <div id="central-content" class="central-content">
         <img src="static/assets/logo.png">
@@ -72,15 +75,11 @@
    <div class="typing-container">
         <div class="typing-content">
             <div class="typing-textarea">
-                <textarea name="" id="chat-input" spellcheck="false" placeholder="Digite sua pergunta"></textarea>
+                <textarea name="" id="chat-input" spellcheck="false" placeholder="Digite sua pergunta..."></textarea>
                 <span id="send-btn" class="material-symbols-rounded">send</span>
             </div>
             <div class="typing-controls">
-                <!-- <span id="delete-btn" class="material-symbols-rounded">delete</span> -->
                 <span id="theme-btn" class="material-symbols-rounded">light_mode</span>
-                <!-- <div class="menuBtn"> -->
-                    <span class="material-symbols-outlined" id="toggle-btn">density_medium</span>
-                <!-- </div> -->
             </div>
         </div>
     </div>

@@ -59,8 +59,13 @@ toggleBtn.addEventListener('click', () => {
     if (sidebar.style.width === '250px') {
         sidebar.style.width = '0';
         // content.style.marginLeft = '0';
+        toggleBtn.style.marginLeft = '0'
+        toggleBtn.style.width = '40px'
+        toggleBtn.textContent = 'chevron_right'
     } else {
         sidebar.style.width = '250px';
+        toggleBtn.style.width = '525px'
+        toggleBtn.textContent = 'chevron_left'
         // content.style.marginLeft = '250px';
     }
 });
