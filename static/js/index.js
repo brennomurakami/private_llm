@@ -56,17 +56,15 @@ function handleUserMessage(event) {
 }
 
 toggleBtn.addEventListener('click', () => {
-    if (sidebar.style.width === '250px') {
-        sidebar.style.width = '0';
-        // content.style.marginLeft = '0';
+    if (sidebar.style.left === '0px') {
+        sidebar.style.left = '-250px'
         toggleBtn.style.marginLeft = '0'
         toggleBtn.style.width = '40px'
         toggleBtn.textContent = 'chevron_right'
     } else {
-        sidebar.style.width = '250px';
-        toggleBtn.style.width = '525px'
         toggleBtn.textContent = 'chevron_left'
-        // content.style.marginLeft = '250px';
+        toggleBtn.style.width = '525px'
+        sidebar.style.left = '0px'
     }
 });
 
@@ -74,15 +72,40 @@ userInput.addEventListener('keypress', handleUserMessage);
 
 });
 
+const chats = document.getElementById('chats');
+let contador = 0;
+
 function handleCardClick(cardId) {
     // Lógica para lidar com o clique no card
     console.log("Card clicado:", cardId);
 }
 
-function deletar(){
-    console.log("deletou")
+function deletar(cardId){
+    // Obtém o elemento pai do botão de delete, que é o card a ser removido
+    var cardToRemove = cardId.parentNode.parentNode;
+    
+    // Obtém o elemento pai do card, que é o contêiner de chats
+    var chats = cardToRemove.parentNode;
+    
+    // Remove o card do contêiner de chats
+    chats.removeChild(cardToRemove);
 }
 
 function alterar(){
     console.log("alterou")
+}
+
+function criarCard() {
+    contador++; // Incrementa o contador para gerar um novo ID único para o card
+    const novoCard = document.createElement('div');
+    novoCard.classList.add('card');
+    novoCard.setAttribute('id', 'card' + contador); // Define o ID único para o novo card
+    novoCard.innerHTML = `
+        <p>Chat ${contador}</p>
+        <div id="card-op">
+            <span class="material-symbols-outlined" onclick="alterar()" id="edit">edit</span>
+            <span class="material-symbols-outlined" onclick="deletar(this)" id="delete">delete</span>
+        </div>
+    `;
+    chats.appendChild(novoCard);
 }
