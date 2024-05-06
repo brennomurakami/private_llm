@@ -42,15 +42,15 @@ def gerar_resposta():
 @app.route('/salvar-card', methods=['POST'])
 def salvar_card():
     data = request.json
-    nome_card = data['nome_card']
+    nome_card = data.get('nome_card')
 
-    # Salva o ID do card no banco de dados
-    conversa = Conversa(nome_conversa=nome_card)
-    db.session.add(conversa)
+    # Crie um novo card no banco de dados
+    novo_card = Conversa(nome_conversa=nome_card)
+    db.session.add(novo_card)
     db.session.commit()
-    print("SALVO")
 
-    return 'ID do card salvo com sucesso no servidor.'
+    # Retorne o ID do card na resposta
+    return jsonify({'id_card': novo_card.idconversa}), 200
 
 @app.route('/cards', methods=['GET'])
 def get_cards():
@@ -59,6 +59,22 @@ def get_cards():
     print(cards)
     cards_data = [{'idconversa': card.idconversa, 'nome_conversa': card.nome_conversa} for card in cards]  # Formata os dados dos cards
     return jsonify(cards_data)  # Retorna os dados dos cards como JSON
+
+@app.route('/deletar-card', methods=['POST'])
+def deletar_card():
+    data = request.json
+    card_id = data['card_id']
+
+    # Remove o card do banco de dados
+    print("id: ", card_id)
+    card = Conversa.query.filter_by(idconversa=card_id).first()
+    print("card encontrado:", card)
+    if card:
+        db.session.delete(card)
+        db.session.commit()
+        return 'Card excluído com sucesso do banco de dados.'
+    else:
+        return 'Card não encontrado no banco de dados.', 404
 
 if __name__ == '__main__':
     app.run(debug=True)

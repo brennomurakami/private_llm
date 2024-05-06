@@ -82,15 +82,36 @@ function handleCardClick(cardId) {
     console.log("Card clicado:", cardId);
 }
 
-function deletar(cardId){
+function deletar(card){
+    let cardId = card.parentNode.parentNode.id;
     // Obtém o elemento pai do botão de delete, que é o card a ser removido
-    var cardToRemove = cardId.parentNode.parentNode;
+    var cardToRemove = card.parentNode.parentNode;
     
     // Obtém o elemento pai do card, que é o contêiner de chats
     var chats = cardToRemove.parentNode;
     
     // Remove o card do contêiner de chats
     chats.removeChild(cardToRemove);
+
+    console.log("id do card:", cardId)
+
+    // Envia o ID do card para o servidor Flask para exclusão
+    fetch('/deletar-card', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ card_id: cardId })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro ao excluir card no servidor.');
+        }
+        console.log('Card excluído com sucesso no servidor.');
+    })
+    .catch(error => {
+        console.error('Erro ao enviar ID do card para exclusão no servidor:', error);
+    });
 }
 
 function alterar(){
@@ -99,20 +120,9 @@ function alterar(){
 
 function criarCard() {
     let nomeCard = 'Novo chat';
-    const novoCard = document.createElement('div');
-    novoCard.classList.add('card');
-    novoCard.setAttribute('id', 'card' + contador); // Define o ID único para o novo card
-    novoCard.innerHTML = `
-        <p>${nomeCard}</p>
-        <div id="card-op">
-            <span class="material-symbols-outlined" onclick="alterar()" id="edit">edit</span>
-            <span class="material-symbols-outlined" onclick="deletar(this)" id="delete">delete</span>
-        </div>
-    `;
-    chats.appendChild(novoCard);
 
-     // Envia o ID do card para o servidor Flask
-     fetch('/salvar-card', {
+    // Envia o nome do card para o servidor Flask e obtém o ID gerado
+    fetch('/salvar-card', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -123,10 +133,30 @@ function criarCard() {
         if (!response.ok) {
             throw new Error('Erro ao salvar card no servidor.');
         }
-        console.log('ID do card enviado com sucesso para o servidor.');
+        // Converte a resposta em JSON
+        return response.json();
+    })
+    .then(data => {
+        // Obtém o ID gerado do card na resposta
+        const idCard = data.id_card;
+
+        // Cria o elemento HTML do card com o ID gerado
+        const novoCard = document.createElement('div');
+        novoCard.classList.add('card');
+        novoCard.setAttribute('id', idCard); // Define o ID do card com o ID gerado
+        novoCard.innerHTML = `
+            <p>${nomeCard}</p>
+            <div id="card-op">
+                <span class="material-symbols-outlined" onclick="alterar()" id="edit">edit</span>
+                <span class="material-symbols-outlined" onclick="deletar(this)" id="delete">delete</span>
+            </div>
+        `;
+        chats.appendChild(novoCard);
+
+        console.log('ID do card enviado com sucesso para o servidor:', idCard);
     })
     .catch(error => {
-        console.error('Erro ao enviar ID do card para o servidor:', error);
+        console.error('Erro ao enviar nome do card para o servidor:', error);
     });
 }
 
