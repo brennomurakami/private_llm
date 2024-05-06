@@ -52,6 +52,35 @@ body{
     filter: brightness(1.2);
 }
 
+.sair-btn{
+    width: 100%; /* Faz o botão ocupar todo o espaço horizontal disponível */
+    background-color: #333; /* Define a cor de fundo do botão */
+    color: white; /* Define a cor do texto */
+    padding: 8px; /* Adiciona preenchimento ao redor do texto do botão */
+    margin: 8px 0; /* Adiciona margem acima e abaixo do botão */
+    border: none; /* Remove a borda do botão */
+    border-radius: 4px; /* Adiciona bordas arredondadas ao botão */
+    cursor: pointer; /* Muda o cursor para uma mão ao passar sobre o botão */
+    margin-bottom: 20px;
+    border: 1px solid red;
+}
+
+.sair-btn:hover{
+    background-color: red;
+}
+
+.user-controls{
+    position: fixed;
+    bottom: 0;
+    background: #333;
+    width: 215px;
+    padding: 10px;
+}
+
+.user-controls p{
+    text-align: center;
+}
+
 
 .central-content{
     text-align: center;
@@ -103,17 +132,31 @@ body{
     width: 250px;
     position: fixed;
     top: 0;
-    left: -400px;
+    left: -250px;
     background-color: #333;
     overflow-x: hidden;
     transition: 0.5s;
     z-index: 1000;
+    padding-bottom: 90px;
 }
 
 .sidebar-content {
     padding: 20px;
     color: white;
+    padding-right: 15px;
 }
+
+/* Estilo para navegadores Webkit (Chrome, Safari, etc.) */
+.sidebar::-webkit-scrollbar {
+    width: 5px; /* Largura da barra de rolagem */
+    background-color: transparent; /* Cor de fundo da barra de rolagem */
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.5); /* Cor do indicador de rolagem */
+    border-radius: 10px; /* Raio de borda do indicador de rolagem */
+}
+
 
 #toggle-btn {
     position: fixed;
