@@ -21,6 +21,15 @@ from models.conversa import Conversa
 app = Flask(__name__)
 client = OpenAI(api_key = key)
 
+assistant = client.beta.assistants.create(
+  name="Teste",
+  instructions="Você possui 3 perfis: veterinário, especialista em vendas e poeta. \
+        Dessa forma ocê deve escolher 1 destes 3 perfis para elaborar a resposta com base no contexto da pergunta. \
+        Por último, você deve responder as mensagens como se eu me chamasse Brenno Murakami",
+  tools=[{"type": "code_interpreter"}],
+  model="gpt-4-turbo",
+)
+
 # Configurações do banco de dados
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -39,24 +48,53 @@ def index():
 @app.route('/gerar-resposta', methods=['POST'])
 def gerar_resposta():
     pergunta = request.form['pergunta']
+    thread = 'thread_KYNzMZ0RJ9ZtxDNF99W98tNc'
     
-    response = client.chat.completions.create(
-    model="gpt-4-turbo",
-    messages=[
-        {"role": "user", "content": pergunta}
-    ])
-    print(response)
-    resposta = response.choices[0].message.content
-    resposta = resposta
+    message = client.beta.threads.messages.create(
+    thread_id=thread,
+    role="user",
+    content=pergunta
+    )
+
+    run = client.beta.threads.runs.create_and_poll(
+    thread_id=thread,
+    assistant_id=assistant.id
+    )
+
+    if run.status == 'completed': 
+        messages = client.beta.threads.messages.list(
+        thread_id=thread
+        )
+        # print(messages)
+    else:
+        print(run.status)
+
+    resposta = messages.data[0].content[0].text.value
+    print(resposta)
+
     return jsonify({'resposta': resposta})
+
+# @app.route('/gerar-resposta', methods=['POST'])
+# def gerar_resposta():
+#     pergunta = request.form['pergunta']
+    
+#     response = client.chat.completions.create(
+#     model="gpt-4-turbo",
+#     messages=[
+#         {"role": "user", "content": pergunta}
+#     ])
+#     print(response)
+#     resposta = response.choices[0].message.content
+#     resposta = resposta
+#     return jsonify({'resposta': resposta})
 
 @app.route('/salvar-card', methods=['POST'])
 def salvar_card():
     data = request.json
     nome_card = data.get('nome_card')
-
+    thread = client.beta.threads.create()
     # Crie um novo card no banco de dados
-    novo_card = Conversa(nome_conversa=nome_card)
+    novo_card = Conversa(nome_conversa = nome_card, thread = thread.id)
     db.session.add(novo_card)
     db.session.commit()
 

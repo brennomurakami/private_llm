@@ -220,12 +220,18 @@ body{
 }
 
 .bot-message li{
+    margin: 25px;
+    color: var(--message-color);
+}  
+
+.bot-message h3{
     margin: 10px;
     color: var(--message-color);
 }
 
-.bot-message li{
-    margin: 25px;
+.bot-message ul{
+    margin: 17px;
+    color: var(--message-color);
 }
 
 .chat-container{
