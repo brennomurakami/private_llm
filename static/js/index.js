@@ -110,9 +110,9 @@ function handleCardClick(cardId) {
 }
 
 function deletar(card){
-    let cardId = card.parentNode.parentNode.id;
+    let cardId = card.id;
     // Obtém o elemento pai do botão de delete, que é o card a ser removido
-    var cardToRemove = card.parentNode.parentNode;
+    var cardToRemove = card;
     
     // Obtém o elemento pai do card, que é o contêiner de chats
     var chats = cardToRemove.parentNode;
@@ -175,10 +175,22 @@ function criarCard() {
         novoCard.innerHTML = `
             <p>${nomeCard}</p>
             <div id="card-op">
-                <span class="material-symbols-outlined" onclick="alterar(this)" id="edit">edit</span>
-                <span class="material-symbols-outlined" onclick="deletar(this)" id="delete">delete</span>
+                <span class="material-symbols-outlined" id="edit">edit</span>
+                <span class="material-symbols-outlined" id="delete">delete</span>
             </div>
         `;
+
+         // Adiciona evento de clique para o novoCard
+         novoCard.onclick = function(event) {
+            if (event.target.id === 'edit') {
+                alterar(novoCard);
+            } else if (event.target.id === 'delete') {
+                deletar(novoCard);
+            }
+            else{
+                handleCardClick(this.id)
+            }
+        };
         chats.appendChild(novoCard);
 
         console.log('ID do card enviado com sucesso para o servidor:', idCard);
@@ -200,10 +212,23 @@ function carregarCards() {
                 novoCard.innerHTML = `
                     <p>${card.nome_conversa}</p>
                     <div id="card-op">
-                        <span class="material-symbols-outlined" onclick="alterar(this)" id="edit">edit</span>
-                        <span class="material-symbols-outlined" onclick="deletar(this)" id="delete">delete</span>
+                        <span class="material-symbols-outlined" id="edit">edit</span>
+                        <span class="material-symbols-outlined" id="delete">delete</span>
                     </div>
                 `;
+
+                // Adiciona evento de clique para o novoCard
+                novoCard.onclick = function(event) {
+                    if (event.target.id === 'edit') {
+                        alterar(novoCard);
+                    } else if (event.target.id === 'delete') {
+                        deletar(novoCard);
+                    }
+                    else{
+                        handleCardClick(this.id)
+                    }
+                };
+
                 chats.appendChild(novoCard);  // Adiciona o novo card ao contêiner de chats
             });
         })
