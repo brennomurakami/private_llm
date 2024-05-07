@@ -48,6 +48,43 @@ function handleUserMessage(event) {
             console.log("Resposta recebida.")
             resposta = marked.parse(resposta)
             addBotMessage(resposta);
+
+            // Salva a pergunta na tabela historico_conversa
+            fetch('/salvar-pergunta', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ pergunta: pergunta, idconversa: cardAtual })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao salvar pergunta no servidor.');
+                }
+                console.log('Pergunta salva com sucesso no servidor.');
+            })
+            .catch(error => {
+                console.error('Erro ao enviar pergunta para salvamento no servidor:', error);
+            });
+
+            // Salva a resposta na tabela historico_conversa
+            fetch('/salvar-resposta', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ resposta: resposta, idconversa: cardAtual })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao salvar resposta no servidor.');
+                }
+                console.log('Resposta salva com sucesso no servidor.');
+            })
+            .catch(error => {
+                console.error('Erro ao enviar resposta para salvamento no servidor:', error);
+            });
+
         })
         .catch(error => console.error('Erro ao enviar pergunta:', error));
 
@@ -76,7 +113,7 @@ const themeBtn = document.getElementById('theme-btn');
 const chats = document.getElementById('chats');
 const body = document.querySelector('body');
 let threadAtual = 'thread_KYNzMZ0RJ9ZtxDNF99W98tNc'
-let contador = 0;
+let cardAtual
 // Obtém o modal
 let modal = document.getElementById('modal');
 // Obtém o botão de fechar
@@ -106,9 +143,6 @@ confirmarBtn.onclick = function() {
 }
 
 function handleCardClick(cardId) {
-    // Lógica para lidar com o clique no card
-    console.log("Card clicado:", cardId);
-
     fetch('/get-thread/' + cardId)
     .then(response => response.json())
     .then(data => {
@@ -116,6 +150,9 @@ function handleCardClick(cardId) {
         console.log("Thread atual atualizada:", threadAtual);
     })
     .catch(error => console.error('Erro ao obter thread do servidor:', error));
+
+    cardAtual = cardId
+    console.log("Card Atual: ", cardAtual)
 }
 
 function deletar(card){

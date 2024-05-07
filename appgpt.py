@@ -17,6 +17,7 @@ from models.conta import db
 from models.conversa import db
 from models.historico_conversa import db
 from models.conversa import Conversa
+from models.historico_conversa import HistoricoConversa
 
 app = Flask(__name__)
 client = OpenAI(api_key = key)
@@ -119,6 +120,33 @@ def get_thread(card_id):
         return jsonify({'thread': card.thread}), 200
     else:
         return 'Card não encontrado no banco de dados.', 404
+    
+@app.route('/salvar-pergunta', methods=['POST'])
+def salvar_pergunta():
+    data = request.json
+    pergunta = data['pergunta']
+    idconversa = data['idconversa']
+
+    # Crie um novo registro na tabela historico_conversa
+    nova_pergunta = HistoricoConversa(pergunta=pergunta, idconversa=idconversa)
+    db.session.add(nova_pergunta)
+    db.session.commit()
+
+    return 'Pergunta salva com sucesso no banco de dados.', 200
+
+@app.route('/salvar-resposta', methods=['POST'])
+def salvar_resposta():
+    data = request.json
+    resposta = data['resposta']
+    idconversa = data['idconversa']
+
+    # Crie um novo registro na tabela historico_conversa para a resposta
+    nova_resposta = HistoricoConversa(resposta=resposta, idconversa=idconversa)
+    db.session.add(nova_resposta)
+    db.session.commit()
+
+    return 'Resposta salva com sucesso no banco de dados.', 200
+
 
 if __name__ == '__main__':
     app.run(debug=True)
