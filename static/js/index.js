@@ -40,7 +40,7 @@ function handleUserMessage(event) {
             headers: {
                  'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: 'pergunta=' + encodeURIComponent(pergunta)
+            body: 'pergunta=' + encodeURIComponent(pergunta) + '&thread=' + encodeURIComponent(threadAtual)
         })
         .then(response => response.json())
         .then(data => {
@@ -75,6 +75,7 @@ userInput.addEventListener('keypress', handleUserMessage);
 const themeBtn = document.getElementById('theme-btn');
 const chats = document.getElementById('chats');
 const body = document.querySelector('body');
+let threadAtual = 'thread_KYNzMZ0RJ9ZtxDNF99W98tNc'
 let contador = 0;
 // Obtém o modal
 let modal = document.getElementById('modal');
@@ -107,6 +108,14 @@ confirmarBtn.onclick = function() {
 function handleCardClick(cardId) {
     // Lógica para lidar com o clique no card
     console.log("Card clicado:", cardId);
+
+    fetch('/get-thread/' + cardId)
+    .then(response => response.json())
+    .then(data => {
+        threadAtual = data.thread;
+        console.log("Thread atual atualizada:", threadAtual);
+    })
+    .catch(error => console.error('Erro ao obter thread do servidor:', error));
 }
 
 function deletar(card){

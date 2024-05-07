@@ -48,7 +48,8 @@ def index():
 @app.route('/gerar-resposta', methods=['POST'])
 def gerar_resposta():
     pergunta = request.form['pergunta']
-    thread = 'thread_KYNzMZ0RJ9ZtxDNF99W98tNc'
+    thread = request.form['thread']
+    print('thread recebida:', thread)
     
     message = client.beta.threads.messages.create(
     thread_id=thread,
@@ -73,20 +74,6 @@ def gerar_resposta():
     print(resposta)
 
     return jsonify({'resposta': resposta})
-
-# @app.route('/gerar-resposta', methods=['POST'])
-# def gerar_resposta():
-#     pergunta = request.form['pergunta']
-    
-#     response = client.chat.completions.create(
-#     model="gpt-4-turbo",
-#     messages=[
-#         {"role": "user", "content": pergunta}
-#     ])
-#     print(response)
-#     resposta = response.choices[0].message.content
-#     resposta = resposta
-#     return jsonify({'resposta': resposta})
 
 @app.route('/salvar-card', methods=['POST'])
 def salvar_card():
@@ -122,6 +109,14 @@ def deletar_card():
         db.session.delete(card)
         db.session.commit()
         return 'Card excluído com sucesso do banco de dados.'
+    else:
+        return 'Card não encontrado no banco de dados.', 404
+    
+@app.route('/get-thread/<card_id>', methods=['GET'])
+def get_thread(card_id):
+    card = Conversa.query.filter_by(idconversa=card_id).first()
+    if card:
+        return jsonify({'thread': card.thread}), 200
     else:
         return 'Card não encontrado no banco de dados.', 404
 
