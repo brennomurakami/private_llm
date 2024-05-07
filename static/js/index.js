@@ -1,13 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
-
 const chatContainer = document.getElementById('chat-container');
-const userInput = document.getElementById('chat-input');
-const toggleBtn = document.getElementById('toggle-btn');
-const sidebar = document.getElementById('sidebar');
-const enviarBtn = document.getElementById('send-btn');
-enviarBtn.addEventListener('click', handleUserMessage);
-const centralText = document.getElementById('central-content');
-
 // Função para adicionar mensagem do usuário à interface
 function addUserMessage(message) {
     const userMessageDiv = document.createElement('div');
@@ -23,6 +14,15 @@ function addBotMessage(message) {
     botMessageDiv.innerHTML = message;
     chatContainer.appendChild(botMessageDiv);
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+
+const userInput = document.getElementById('chat-input');
+const toggleBtn = document.getElementById('toggle-btn');
+const sidebar = document.getElementById('sidebar');
+const enviarBtn = document.getElementById('send-btn');
+enviarBtn.addEventListener('click', handleUserMessage);
+const centralText = document.getElementById('central-content');
 
 // Função para lidar com a submissão da mensagem do usuário
 function handleUserMessage(event) {
@@ -148,11 +148,34 @@ function handleCardClick(cardId) {
     .then(data => {
         threadAtual = data.thread;
         console.log("Thread atual atualizada:", threadAtual);
+
+         chatContainer.innerHTML = '<br><br>';
+        // Carrega as mensagens da conversa atual
+         carregarMensagens(cardId);
     })
     .catch(error => console.error('Erro ao obter thread do servidor:', error));
 
     cardAtual = cardId
     console.log("Card Atual: ", cardAtual)
+}
+
+function carregarMensagens(cardId) {
+    console.log("entrou")
+    fetch('/mensagens/' + cardId)
+    .then(response => response.json())
+    .then(messages => {
+        // messages.sort((a, b) => a.idhistorico - b.idhistorico);
+        // Para cada mensagem retornada, adicione à interface
+        console.log(messages)
+        messages.forEach(message => {
+            if (message.tipo === 'pergunta') {
+                addUserMessage(message.conteudo);
+            } else if (message.tipo === 'resposta') {
+                addBotMessage(message.conteudo);
+            }
+        });
+    })
+    .catch(error => console.error('Erro ao carregar mensagens do servidor:', error));
 }
 
 function deletar(card){

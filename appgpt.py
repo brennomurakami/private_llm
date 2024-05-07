@@ -147,6 +147,20 @@ def salvar_resposta():
 
     return 'Resposta salva com sucesso no banco de dados.', 200
 
+@app.route('/mensagens/<card_id>', methods=['GET'])
+def get_mensagens(card_id):
+    historico = HistoricoConversa.query.filter_by(idconversa=card_id).order_by(HistoricoConversa.idhistorico).all()
+     # Lista para armazenar as mensagens
+    mensagens = []
+    # Percorre cada elemento do histórico
+    for mensagem in historico:
+        # Verifica se é uma pergunta ou resposta e adiciona à lista de mensagens
+        if mensagem.pergunta:
+            mensagens.append({'tipo': 'pergunta', 'conteudo': mensagem.pergunta})
+        elif mensagem.resposta:
+            mensagens.append({'tipo': 'resposta', 'conteudo': mensagem.resposta})
+    return jsonify(mensagens), 200
+
 
 if __name__ == '__main__':
     app.run(debug=True)
