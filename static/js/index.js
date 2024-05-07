@@ -1,10 +1,13 @@
 const chatContainer = document.getElementById('chat-container');
+const centralText = document.getElementById('central-content');
+
 // Função para adicionar mensagem do usuário à interface
 function addUserMessage(message) {
     const userMessageDiv = document.createElement('div');
     userMessageDiv.className = 'message user-message';
     userMessageDiv.innerHTML = `<p>${message}</p>`;
     chatContainer.appendChild(userMessageDiv);
+    centralText.style.display = 'none';
 }
 
 // Função para adicionar mensagem da IA à interface
@@ -22,16 +25,22 @@ const toggleBtn = document.getElementById('toggle-btn');
 const sidebar = document.getElementById('sidebar');
 const enviarBtn = document.getElementById('send-btn');
 enviarBtn.addEventListener('click', handleUserMessage);
-const centralText = document.getElementById('central-content');
 
 // Função para lidar com a submissão da mensagem do usuário
-function handleUserMessage(event) {
+async function handleUserMessage(event) {
     if (event.key === 'Enter' || event.target.id === 'send-btn') {
         const pergunta = userInput.value;
         if (pergunta == '') {
+            console.log(threadAtual)
+            console.log(cardAtual)
             return
         }
-        centralText.style.display = 'none';
+        if (threadAtual == null) {
+            await NovoChatSelecionado()
+            console.log("Criando")
+        }
+        setTimeout(function() {
+        console.log("Adicionando mensagem")
         addUserMessage(pergunta);
 
         // Envia a pergunta para o servidor
@@ -87,6 +96,7 @@ function handleUserMessage(event) {
 
         })
         .catch(error => console.error('Erro ao enviar pergunta:', error));
+        }, 500);
 
         userInput.value = '';
     }
@@ -112,7 +122,7 @@ userInput.addEventListener('keypress', handleUserMessage);
 const themeBtn = document.getElementById('theme-btn');
 const chats = document.getElementById('chats');
 const body = document.querySelector('body');
-let threadAtual = 'thread_KYNzMZ0RJ9ZtxDNF99W98tNc'
+let threadAtual
 let cardAtual
 // Obtém o modal
 let modal = document.getElementById('modal');
@@ -150,6 +160,7 @@ function handleCardClick(cardId) {
         console.log("Thread atual atualizada:", threadAtual);
 
          chatContainer.innerHTML = '<br><br>';
+         centralText.style.display = 'block';
         // Carrega as mensagens da conversa atual
          carregarMensagens(cardId);
     })
@@ -157,6 +168,17 @@ function handleCardClick(cardId) {
 
     cardAtual = cardId
     console.log("Card Atual: ", cardAtual)
+}
+
+async function NovoChatSelecionado() {
+    const result = criarCard(); // Chama criarCard() normalmente
+    if (result instanceof Promise) {
+        // Se criarCard() retornar uma Promise, retorne-a diretamente
+        return result;
+    } else {
+        // Se criarCard() não retornar uma Promise, crie e retorne uma Promise resolvida
+        return Promise.resolve();
+    }
 }
 
 function carregarMensagens(cardId) {
@@ -179,6 +201,13 @@ function carregarMensagens(cardId) {
 }
 
 function deletar(card){
+    if (cardAtual == card.id) {
+        console.log("IGUAL")
+        threadAtual = null
+        cardAtual = null
+        chatContainer.innerHTML = '<br><br>';
+        centralText.style.display = 'block';
+    }
     let cardId = card.id;
     // Obtém o elemento pai do botão de delete, que é o card a ser removido
     var cardToRemove = card;
@@ -215,9 +244,9 @@ function alterar(card){
     mostrarModal();
 }
 
-function criarCard() {
+async function criarCard() {
     let nomeCard = 'Novo chat';
-
+    console.log("entrou")
     // Envia o nome do card para o servidor Flask e obtém o ID gerado
     fetch('/salvar-card', {
         method: 'POST',
@@ -261,11 +290,14 @@ function criarCard() {
             }
         };
         chats.appendChild(novoCard);
+        handleCardClick(novoCard.id);
 
         console.log('ID do card enviado com sucesso para o servidor:', idCard);
+        return Promise.resolve()
     })
     .catch(error => {
         console.error('Erro ao enviar nome do card para o servidor:', error);
+        return Promise.reject()
     });
 }
 

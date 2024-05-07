@@ -107,6 +107,8 @@ def deletar_card():
     card = Conversa.query.filter_by(idconversa=card_id).first()
     print("card encontrado:", card)
     if card:
+         # Remove todas as entradas correspondentes na tabela HistoricoConversa
+        HistoricoConversa.query.filter_by(idconversa=card_id).delete()
         db.session.delete(card)
         db.session.commit()
         return 'Card excluído com sucesso do banco de dados.'
