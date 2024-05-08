@@ -16,6 +16,17 @@ database_url = os.getenv('DATABASE_URL')
 from models.conta import db
 from models.conversa import db
 from models.historico_conversa import db
+from models.inseminador import db
+from models.fazenda import db
+from models.cliente import db
+from models.protocolos_inseminacao import db
+from models.touro import db
+from models.produto import db
+from models.vaca import db
+from models.venda import db
+from models.resultado_inseminacao import db
+
+#   importação dos objetos
 from models.conversa import Conversa
 from models.historico_conversa import HistoricoConversa
 
