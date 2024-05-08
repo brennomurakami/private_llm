@@ -174,6 +174,21 @@ def get_mensagens(card_id):
             mensagens.append({'tipo': 'resposta', 'conteudo': mensagem.resposta})
     return jsonify(mensagens), 200
 
+@app.route('/alterar-nome-card', methods=['POST'])
+def alterar_nome_card():
+    data = request.json
+    card_id = data['cardAlterar']
+    novo_nome = data['novoNome']
+
+    # Atualiza o nome do card no banco de dados
+    card = Conversa.query.get(card_id)
+    if card:
+        card.nome_conversa = novo_nome
+        db.session.commit()
+        return 'Nome do card alterado com sucesso.', 200
+    else:
+        return 'Card não encontrado no banco de dados.', 404
+
 
 if __name__ == '__main__':
     app.run(debug=True)

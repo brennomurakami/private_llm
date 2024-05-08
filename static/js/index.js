@@ -124,11 +124,9 @@ const chats = document.getElementById('chats');
 const body = document.querySelector('body');
 let threadAtual
 let cardAtual
-// Obtém o modal
+let cardAlterar
 let modal = document.getElementById('modal');
-// Obtém o botão de fechar
 let closeBtn = document.getElementsByClassName('close')[0];
-// Obtém o botão de confirmar dentro do modal
 let confirmarBtn = document.getElementById('confirmar-btn');
 
 function mostrarModal() {
@@ -137,19 +135,56 @@ function mostrarModal() {
 
 closeBtn.onclick = function() {
     modal.style.display = 'none';
+    cardAlterar = ''
+    document.getElementById('novo-nome-input').value = '';
 }
 
 // Função para fechar o modal ao clicar fora dele
 window.onclick = function(event) {
     if (event.target == modal) {
         modal.style.display = 'none';
+        cardAlterar = ''
     }
+    document.getElementById('novo-nome-input').value = '';
 }
 
 confirmarBtn.onclick = function() {
-    // Aqui você pode adicionar lógica para enviar o novo nome do card para o servidor
-    // e fechar o modal após confirmar a alteração
-    modal.style.display = 'none'; // Fecha o modal
+    // Obtém o novo nome do card
+    let novoNome = document.getElementById('novo-nome-input').value;
+    
+    // Envia o novo nome do card para o servidor Flask
+    fetch('/alterar-nome-card', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ cardAlterar: cardAlterar, novoNome: novoNome })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro ao alterar o nome do card.');
+        }
+        console.log('Nome do card alterado com sucesso.');
+        // Fecha o modal após confirmar a alteração
+        modal.style.display = 'none';
+
+        // Limpa o campo do formulário onde você digitou o novo nome
+        document.getElementById('novo-nome-input').value = '';
+
+         // Atualiza o nome do card no DOM
+        const cardElement = document.getElementById(cardAlterar); // Selecione o elemento do card pelo ID
+        if (cardElement) {
+            cardElement.querySelector('p').textContent = novoNome; // Atualize o conteúdo do elemento com o novo nome
+        } else {
+            console.error('Elemento do card não encontrado no DOM.');
+        }
+
+        cardAlterar = ''
+    })
+    .catch(error => {
+        console.error('Erro ao alterar o nome do card:', error);
+        // Aqui você pode exibir uma mensagem de erro ao usuário, se desejar
+    });
 }
 
 function handleCardClick(cardId) {
@@ -240,7 +275,8 @@ function deletar(card){
 }
 
 function alterar(card){
-    cardId = card.parentNode.parentNode.id;
+    cardAlterar = card.id;
+    console.log(cardAlterar)
     mostrarModal();
 }
 
