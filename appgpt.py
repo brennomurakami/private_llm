@@ -29,6 +29,15 @@ from models.resultado_inseminacao import db
 #   importação dos objetos
 from models.conversa import Conversa
 from models.historico_conversa import HistoricoConversa
+from models.inseminador import Inseminador
+from models.fazenda import Fazenda
+from models.cliente import Cliente
+from models.protocolos_inseminacao import ProtocoloInseminacao
+from models.touro import Touro
+from models.produto import Produto
+from models.vaca import Vaca
+from models.venda import Venda
+from models.resultado_inseminacao import ResultadoInseminacao
 
 app = Flask(__name__)
 client = OpenAI(api_key = key)
