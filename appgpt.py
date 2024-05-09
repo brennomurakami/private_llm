@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 from backend.gpt import client, assistant
 from backend.consultas import *
-from teste import *
+from sql import *
 
 # Adiciona o diretório raiz do projeto ao caminho de pesquisa de módulos
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))

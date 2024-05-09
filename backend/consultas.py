@@ -2,7 +2,7 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from appgpt import app, db
+from appgpt import db
 from backend.database.modelos import Conversa, HistoricoConversa, Inseminador, Fazenda, Cliente, ProtocoloInseminacao, Touro, Produto, Vaca, Venda, ResultadoInseminacao
 
 # Função para retornar o total de vendas e a média de vendas por período específico
@@ -54,15 +54,15 @@ def formular_resposta(mensagem):
 
         # Verifica se o nome da função está presente na mensagem e chama a função correspondente
         for funcao_nome, funcao in funcoes_disponiveis.items():
-            if funcao_nome in mensagem:
+            if 'total_vendas_periodo' in mensagem:
                 parametros = None
                 # Verifica se há parâmetros na mensagem
                 if "(" in mensagem and ")" in mensagem:
                     parametros_str = mensagem[mensagem.find("(") + 1: mensagem.find(")")]
                     parametros = parametros_str.split(",")
                 # Chama a função sem parâmetros se não houver argumentos na mensagem
-                resultado = funcao() if not parametros else funcao(*parametros)
-                resultados.append((funcao_nome, resultado))
+            resultado = funcao() if not parametros else funcao(*parametros)
+            resultados.append((funcao_nome, resultado))
 
         # Gera a resposta no formato solicitado
         resposta = " ".join([f"Função {funcao}: Resultado {resultado}" for funcao, resultado in resultados])

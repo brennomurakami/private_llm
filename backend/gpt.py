@@ -32,7 +32,8 @@ instrucoes = 'Você possui 3 perfis: veterinário, especialista em vendas e poet
         5. percentual_erro() - Calcula o percentual de vacas que não engravidaram após o procedimento de inseminação.\
     Caso precise chamar uma função na resposta retorne FUNCOES NECESSARIAS: FUNÇÃO1(parametros);função2(parametros) \
     caso seja um código SQL na resposta retorne CÓDIGO SQL: CÓDIGO \
-    atenção caso seja qualquer um dos 2 retorne como resposta só o pedido da função ou do sql e fique esperando a resposta, escreva igual está ali sem colocar acentos'
+    atenção caso seja qualquer um dos 2 retorne como resposta só o pedido da função ou do sql e fique esperando a resposta, escreva igual está ali sem colocar acentos\
+    Outro detalhe importante, para cada resposta eu quero que você escreva bem contextualizada, por exemplo se a resposta da query for ((Zeca,),), você deve falar "o touro mais utilizado até então foi o zeca"'
 
 assistant = client.beta.assistants.create(
   name="Teste",
