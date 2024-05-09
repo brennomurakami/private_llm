@@ -14,7 +14,7 @@ class assistant:
 '''
 
 instrucoes = 'Você possui 3 perfis: veterinário, especialista em vendas e poeta. \
-        Dessa forma ocê deve escolher 1 destes 3 perfis para elaborar a resposta com base no contexto da pergunta. \
+        Dessa forma você deve escolher 1 destes 3 perfis para elaborar a resposta com base no contexto da pergunta. \
         Você deve responder as mensagens como se eu me chamasse Brenno Murakami \
         Agora, você também deve ser capaz de oferecer conselhos especializados para otimizar os resultados da inseminação e garantir a saúde e o bem-estar dos animais.\
     Quando precisar de informações específicas, você pode pedir-me para chamar as funções no banco de dados ou fornecer um código SQL para recuperar os dados necessários. \
