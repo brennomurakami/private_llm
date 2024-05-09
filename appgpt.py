@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, jsonify
-from openai import OpenAI
 import sys
 import os
 from dotenv import load_dotenv
 from backend.gpt import client, assistant
+from backend.consultas import *
+from teste import *
 
 # Adiciona o diretório raiz do projeto ao caminho de pesquisa de módulos
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -12,38 +13,14 @@ load_dotenv()
 
 database_url = os.getenv('DATABASE_URL')
 
-# Importa e inicializa os modelos
-from backend.database.models.conta import db
-from backend.database.models.conversa import db
-from backend.database.models.historico_conversa import db
-from backend.database.models.inseminador import db
-from backend.database.models.fazenda import db
-from backend.database.models.cliente import db
-from backend.database.models.protocolos_inseminacao import db
-from backend.database.models.touro import db
-from backend.database.models.produto import db
-from backend.database.models.vaca import db
-from backend.database.models.venda import db
-from backend.database.models.resultado_inseminacao import db
-
-#   importação dos objetos
-from backend.database.models.conversa import Conversa
-from backend.database.models.historico_conversa import HistoricoConversa
-from backend.database.models.inseminador import Inseminador
-from backend.database.models.fazenda import Fazenda
-from backend.database.models.cliente import Cliente
-from backend.database.models.protocolos_inseminacao import ProtocoloInseminacao
-from backend.database.models.touro import Touro
-from backend.database.models.produto import Produto
-from backend.database.models.vaca import Vaca
-from backend.database.models.venda import Venda
-from backend.database.models.resultado_inseminacao import ResultadoInseminacao
-
 app = Flask(__name__)
 
 # Configurações do banco de dados
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+#   importação dos objetos
+from backend.database.modelos import Conversa, HistoricoConversa, Inseminador, Fazenda, Cliente, ProtocoloInseminacao, Touro, Produto, Vaca, Venda, ResultadoInseminacao
 
 # Inicializa o banco de dados com o aplicativo Flask
 db.init_app(app)
@@ -56,32 +33,80 @@ with app.app_context():
 def index():
     return render_template('index.html')
 
+# @app.route('/gerar-resposta', methods=['POST'])
+# def gerar_resposta():
+#     pergunta = request.form['pergunta']
+#     thread = request.form['thread']
+#     print('thread recebida:', thread)
+    
+#     message = client.beta.threads.messages.create(
+#     thread_id=thread,
+#     role="user",
+#     content=pergunta
+#     )
+
+#     run = client.beta.threads.runs.create_and_poll(
+#     thread_id=thread,
+#     assistant_id=assistant.id
+#     )
+
+#     if run.status == 'completed': 
+#         messages = client.beta.threads.messages.list(
+#         thread_id=thread
+#         )
+#         # print(messages)
+#     else:
+#         print(run.status)
+
+#     resposta = messages.data[0].content[0].text.value
+#     print(resposta)
+
+#     return jsonify({'resposta': resposta})
+
 @app.route('/gerar-resposta', methods=['POST'])
 def gerar_resposta():
     pergunta = request.form['pergunta']
     thread = request.form['thread']
     print('thread recebida:', thread)
     
-    message = client.beta.threads.messages.create(
-    thread_id=thread,
-    role="user",
-    content=pergunta
-    )
+    # Inicializa a variável de resposta
+    resposta = None
 
-    run = client.beta.threads.runs.create_and_poll(
-    thread_id=thread,
-    assistant_id=assistant.id
-    )
-
-    if run.status == 'completed': 
-        messages = client.beta.threads.messages.list(
-        thread_id=thread
+    # Loop para processar a resposta até que não haja mais a solicitação por 'FUNCOES NECESSÁRIAS'
+    while True:
+        message = client.beta.threads.messages.create(
+            thread_id=thread,
+            role="user",
+            content=pergunta
         )
-        # print(messages)
-    else:
-        print(run.status)
 
-    resposta = messages.data[0].content[0].text.value
+        run = client.beta.threads.runs.create_and_poll(
+            thread_id=thread,
+            assistant_id=assistant.id
+        )
+
+        if run.status == 'completed': 
+            messages = client.beta.threads.messages.list(
+                thread_id=thread
+            )
+        else:
+            print(run.status)
+            break
+
+        # Obtém a última mensagem
+        ultima_mensagem = messages.data[0].content[0].text.value
+        print(ultima_mensagem)
+
+        # Verifica se a última mensagem contém a solicitação por 'FUNCOES NECESSÁRIAS'
+        if 'FUNCOES NECESSARIAS:' in ultima_mensagem:
+            # Chama a função para formular a resposta com base nas funções necessárias
+            print('Chamando função')
+            pergunta = formular_resposta(ultima_mensagem)
+        else:
+            # Atribui a resposta diretamente caso não seja solicitado as funções necessárias
+            resposta = ultima_mensagem
+            break
+
     print(resposta)
 
     return jsonify({'resposta': resposta})
