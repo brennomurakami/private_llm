@@ -3,53 +3,43 @@ from openai import OpenAI
 import sys
 import os
 from dotenv import load_dotenv
+from backend.gpt import client, assistant
 
 # Adiciona o diretório raiz do projeto ao caminho de pesquisa de módulos
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 load_dotenv()
 
-key = os.getenv('API_KEY')
 database_url = os.getenv('DATABASE_URL')
 
 # Importa e inicializa os modelos
-from models.conta import db
-from models.conversa import db
-from models.historico_conversa import db
-from models.inseminador import db
-from models.fazenda import db
-from models.cliente import db
-from models.protocolos_inseminacao import db
-from models.touro import db
-from models.produto import db
-from models.vaca import db
-from models.venda import db
-from models.resultado_inseminacao import db
+from backend.database.models.conta import db
+from backend.database.models.conversa import db
+from backend.database.models.historico_conversa import db
+from backend.database.models.inseminador import db
+from backend.database.models.fazenda import db
+from backend.database.models.cliente import db
+from backend.database.models.protocolos_inseminacao import db
+from backend.database.models.touro import db
+from backend.database.models.produto import db
+from backend.database.models.vaca import db
+from backend.database.models.venda import db
+from backend.database.models.resultado_inseminacao import db
 
 #   importação dos objetos
-from models.conversa import Conversa
-from models.historico_conversa import HistoricoConversa
-from models.inseminador import Inseminador
-from models.fazenda import Fazenda
-from models.cliente import Cliente
-from models.protocolos_inseminacao import ProtocoloInseminacao
-from models.touro import Touro
-from models.produto import Produto
-from models.vaca import Vaca
-from models.venda import Venda
-from models.resultado_inseminacao import ResultadoInseminacao
+from backend.database.models.conversa import Conversa
+from backend.database.models.historico_conversa import HistoricoConversa
+from backend.database.models.inseminador import Inseminador
+from backend.database.models.fazenda import Fazenda
+from backend.database.models.cliente import Cliente
+from backend.database.models.protocolos_inseminacao import ProtocoloInseminacao
+from backend.database.models.touro import Touro
+from backend.database.models.produto import Produto
+from backend.database.models.vaca import Vaca
+from backend.database.models.venda import Venda
+from backend.database.models.resultado_inseminacao import ResultadoInseminacao
 
 app = Flask(__name__)
-client = OpenAI(api_key = key)
-
-assistant = client.beta.assistants.create(
-  name="Teste",
-  instructions="Você possui 3 perfis: veterinário, especialista em vendas e poeta. \
-        Dessa forma ocê deve escolher 1 destes 3 perfis para elaborar a resposta com base no contexto da pergunta. \
-        Por último, você deve responder as mensagens como se eu me chamasse Brenno Murakami",
-  tools=[{"type": "code_interpreter"}],
-  model="gpt-4-turbo",
-)
 
 # Configurações do banco de dados
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
