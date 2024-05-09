@@ -91,3 +91,9 @@ class ResultadoInseminacao(db.Model):
     DG = db.Column(db.Boolean)
     vazia_Com_Ou_Sem_CL = db.Column(db.Boolean)
     perda = db.Column(db.Boolean)
+
+class Visita(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_fazenda = db.Column(db.Integer, db.ForeignKey('fazenda.id'), nullable=False)
+    data_visita = db.Column(db.Date, nullable=False)
+    fazenda = db.relationship('Fazenda', backref=db.backref('visitas', lazy=True))

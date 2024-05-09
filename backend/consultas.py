@@ -7,8 +7,13 @@ from backend.database.modelos import Conversa, HistoricoConversa, Inseminador, F
 
 # Função para retornar o total de vendas e a média de vendas por período específico
 def total_vendas_periodo(inicio, fim):
+    print("ENTROU")
+    print(inicio)
+    print(fim)
     total_vendas = Venda.query.filter(Venda.data_venda.between(inicio, fim)).with_entities(db.func.sum(Venda.valor_total).label('total_vendas')).first()
     media_vendas = Venda.query.filter(Venda.data_venda.between(inicio, fim)).with_entities(db.func.avg(Venda.valor_total).label('media_vendas')).first()
+    print(total_vendas)
+    print(media_vendas)
     return total_vendas, media_vendas
 
 # Função para retornar os clientes que fizeram o maior número de compras ou geraram o maior volume de vendas
@@ -33,6 +38,37 @@ def percentual_erro():
     percentual = (vacas_sem_gestacao / total_vacas) * 100
     return percentual
 
+def obter_resultados_inseminacao_ordenados_por_data():
+    print("FUNCAO ATIVADA: obter_resultados_inseminacao_ordenados_por_data")
+    resultados = db.session.query(
+        ResultadoInseminacao.id.label('id_resultado'),
+        ResultadoInseminacao.data_inseminacao,
+        Fazenda.nome_fazenda.label('fazenda'),
+        Inseminador.nome_inseminador.label('inseminador'),
+        Vaca.numero_animal,
+        Vaca.vaca,
+        Touro.nome_touro,
+        ProtocoloInseminacao.protocolo,
+        ResultadoInseminacao.numero_IATF,
+        db.case((ResultadoInseminacao.DG == 1, 'Sim'), else_='Não').label('prenha'),
+        db.case((ResultadoInseminacao.vazia_Com_Ou_Sem_CL == 1, 'Com CL'), else_='Sem CL').label('status_gestacional'),
+        db.case((ResultadoInseminacao.perda == 1, 'Sim'), else_='Não').label('perda_gestacional')
+    ).join(
+        Vaca, ResultadoInseminacao.id_vaca == Vaca.id
+    ).join(
+        Fazenda, Vaca.id_fazenda == Fazenda.id
+    ).join(
+        ProtocoloInseminacao, ResultadoInseminacao.id_protocolo == ProtocoloInseminacao.id
+    ).join(
+        Touro, ResultadoInseminacao.id_touro == Touro.id
+    ).join(
+        Inseminador, ResultadoInseminacao.id_inseminador == Inseminador.id
+    ).order_by(
+        ResultadoInseminacao.data_inseminacao.desc()
+    ).all()
+
+    return resultados
+
 def formular_resposta(mensagem):
     print(mensagem)
     # Lista de todas as funções disponíveis
@@ -41,7 +77,8 @@ def formular_resposta(mensagem):
         "maiores_clientes": maiores_clientes,
         "protocolo_mais_utilizado": protocolo_mais_utilizado,
         "touro_mais_utilizado": touro_mais_utilizado,
-        "percentual_erro": percentual_erro
+        "percentual_erro": percentual_erro,
+        "obter_resultados_inseminacao_ordenados_por_data": obter_resultados_inseminacao_ordenados_por_data
     }
 
     # Verifica se a mensagem contém a solicitação direta para as funções necessárias
@@ -54,15 +91,15 @@ def formular_resposta(mensagem):
 
         # Verifica se o nome da função está presente na mensagem e chama a função correspondente
         for funcao_nome, funcao in funcoes_disponiveis.items():
-            if 'total_vendas_periodo' in mensagem:
+            if funcao_nome in mensagem:
                 parametros = None
                 # Verifica se há parâmetros na mensagem
-                if "(" in mensagem and ")" in mensagem:
+                if 'total_vendas_periodo' in funcao_nome:
                     parametros_str = mensagem[mensagem.find("(") + 1: mensagem.find(")")]
                     parametros = parametros_str.split(",")
                 # Chama a função sem parâmetros se não houver argumentos na mensagem
-            resultado = funcao() if not parametros else funcao(*parametros)
-            resultados.append((funcao_nome, resultado))
+                resultado = funcao() if not parametros else funcao(*parametros)
+                resultados.append((funcao_nome, resultado))
 
         # Gera a resposta no formato solicitado
         resposta = " ".join([f"Função {funcao}: Resultado {resultado}" for funcao, resultado in resultados])

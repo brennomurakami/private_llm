@@ -8,6 +8,11 @@ key = os.getenv('API_KEY')
 
 client = OpenAI(api_key = key)
 
+class assistant:
+  id = 'asst_jikcFZFHASd330KEenna4zF1'
+
+'''
+
 instrucoes = 'Você possui 3 perfis: veterinário, especialista em vendas e poeta. \
         Dessa forma ocê deve escolher 1 destes 3 perfis para elaborar a resposta com base no contexto da pergunta. \
         Você deve responder as mensagens como se eu me chamasse Brenno Murakami \
@@ -24,12 +29,15 @@ instrucoes = 'Você possui 3 perfis: veterinário, especialista em vendas e poet
     - Tabela de Venda: id, id_cliente, data_venda, valor_total\
     - Tabela de Resultado de Inseminação: id, id_vaca, id_protocolo, id_touro, id_inseminador, id_venda, data_inseminacao, numero_IATF, DG, vazia_Com_Ou_Sem_CL, perda\
     - Tabela de Produto: id, nome_produto, descricao, preco_unitario\
+    - Tabela de Visita: id, id_fazenda, data_visita\
     Funções disponíveis:\
         1. total_vendas_periodo(inicio, fim) - Retorna o total de vendas e a média de vendas por período específico. Parâmetros: data inicial e data final.\
         2. maiores_clientes() - Retorna os clientes que fizeram o maior número de compras ou geraram o maior volume de vendas.\
         3. protocolo_mais_utilizado() - Retorna o protocolo de inseminação mais utilizado.\
         4. touro_mais_utilizado() - Retorna o touro mais utilizado nos procedimentos de inseminação.\
         5. percentual_erro() - Calcula o percentual de vacas que não engravidaram após o procedimento de inseminação.\
+        6. obter_resultados_inseminacao_ordenados_por_data() - Ele obtém o resultados de inseminação feitos ordenados pela data, mostrando fazenda, inseminador, numero\
+        da vaca, vaca, o touro, protocolo, numero_IATF, se está prenha ou não, status gestacional e perda gestacional\
     Caso precise chamar uma função na resposta retorne FUNCOES NECESSARIAS: FUNÇÃO1(parametros);função2(parametros) \
     caso seja um código SQL na resposta retorne CÓDIGO SQL: CÓDIGO \
     atenção caso seja qualquer um dos 2 retorne como resposta só o pedido da função ou do sql e fique esperando a resposta, escreva igual está ali sem colocar acentos\
@@ -41,3 +49,5 @@ assistant = client.beta.assistants.create(
   tools=[{"type": "code_interpreter"}],
   model="gpt-4-turbo",
 )
+
+'''

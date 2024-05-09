@@ -101,6 +101,7 @@ def gerar_resposta():
         if 'FUNCOES NECESSARIAS:' in ultima_mensagem:
             # Chama a função para formular a resposta com base nas funções necessárias
             print('Chamando função')
+            print(ultima_mensagem)
             pergunta = formular_resposta(ultima_mensagem)
         else:
             # Atribui a resposta diretamente caso não seja solicitado as funções necessárias
