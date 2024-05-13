@@ -3,68 +3,68 @@ import os
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from appgpt import db
-from backend.database.modelos import Conversa, HistoricoConversa, Inseminador, Fazenda, Cliente, ProtocoloInseminacao, Touro, Produto, Vaca, Venda, ResultadoInseminacao
+from backend.database.modelos import Conversa, HistoricoConversa, Inseminadores, Fazendas, Clientes, ProtocolosInseminacao, Touros, Vacas, Vendas, ResultadosInseminacao
 
 # Função para retornar o total de vendas e a média de vendas por período específico
 def total_vendas_periodo(inicio, fim):
     print("ENTROU")
     print(inicio)
     print(fim)
-    total_vendas = Venda.query.filter(Venda.data_venda.between(inicio, fim)).with_entities(db.func.sum(Venda.valor_total).label('total_vendas')).first()
-    media_vendas = Venda.query.filter(Venda.data_venda.between(inicio, fim)).with_entities(db.func.avg(Venda.valor_total).label('media_vendas')).first()
+    total_vendas = Vendas.query.filter(Vendas.data_venda.between(inicio, fim)).with_entities(db.func.sum(Vendas.valor_total).label('total_vendas')).first()
+    media_vendas = Vendas.query.filter(Vendas.data_venda.between(inicio, fim)).with_entities(db.func.avg(Vendas.valor_total).label('media_vendas')).first()
     print(total_vendas)
     print(media_vendas)
     return total_vendas, media_vendas
 
 # Função para retornar os clientes que fizeram o maior número de compras ou geraram o maior volume de vendas
 def maiores_clientes():
-    query = db.session.query(Cliente.nome_cliente, db.func.count(Venda.id).label('total_compras')).join(Venda).group_by(Cliente.id).order_by(db.desc('total_compras')).limit(5)
+    query = db.session.query(Clientes.nome_cliente, db.func.count(Vendas.id).label('total_compras')).join(Vendas).group_by(Clientes.id).order_by(db.desc('total_compras')).limit(5)
     return query.all()
 
 # Função para retornar o protocolo de inseminação mais utilizado
 def protocolo_mais_utilizado():
-    query = db.session.query(ProtocoloInseminacao.protocolo, db.func.count(ResultadoInseminacao.id_protocolo).label('total_utilizado')).join(ResultadoInseminacao).group_by(ProtocoloInseminacao.id).order_by(db.desc('total_utilizado')).first()
+    query = db.session.query(ProtocolosInseminacao.protocolo, db.func.count(ResultadosInseminacao.id_protocolo).label('total_utilizado')).join(ResultadosInseminacao).group_by(ProtocolosInseminacao.id).order_by(db.desc('total_utilizado')).first()
     return query
 
 # Função para retornar o touro mais utilizado nos procedimentos de inseminação
 def touro_mais_utilizado():
-    query = db.session.query(Touro.nome_touro, db.func.count(ResultadoInseminacao.id_touro).label('total_utilizado')).join(ResultadoInseminacao).group_by(Touro.id).order_by(db.desc('total_utilizado')).first()
+    query = db.session.query(Touros.nome_touro, db.func.count(ResultadosInseminacao.id_touro).label('total_utilizado')).join(ResultadosInseminacao).group_by(Touros.id).order_by(db.desc('total_utilizado')).first()
     return query
 
 # Função para calcular o percentual de vacas que não engravidaram após o procedimento de inseminação
 def percentual_erro():
-    total_vacas = Vaca.query.count()
-    vacas_sem_gestacao = ResultadoInseminacao.query.filter_by(perda=True).count()
+    total_vacas = Vacas.query.count()
+    vacas_sem_gestacao = ResultadosInseminacao.query.filter_by(perda=True).count()
     percentual = (vacas_sem_gestacao / total_vacas) * 100
     return percentual
 
 def obter_resultados_inseminacao_ordenados_por_data():
     print("FUNCAO ATIVADA: obter_resultados_inseminacao_ordenados_por_data")
     resultados = db.session.query(
-        ResultadoInseminacao.id.label('id_resultado'),
-        ResultadoInseminacao.data_inseminacao,
-        Fazenda.nome_fazenda.label('fazenda'),
-        Inseminador.nome_inseminador.label('inseminador'),
-        Vaca.numero_animal,
-        Vaca.vaca,
-        Touro.nome_touro,
-        ProtocoloInseminacao.protocolo,
-        ResultadoInseminacao.numero_IATF,
-        db.case((ResultadoInseminacao.DG == 1, 'Sim'), else_='Não').label('prenha'),
-        db.case((ResultadoInseminacao.vazia_Com_Ou_Sem_CL == 1, 'Com CL'), else_='Sem CL').label('status_gestacional'),
-        db.case((ResultadoInseminacao.perda == 1, 'Sim'), else_='Não').label('perda_gestacional')
+        ResultadosInseminacao.id.label('id_resultado'),
+        ResultadosInseminacao.data_inseminacao,
+        Fazendas.nome_fazenda.label('fazenda'),
+        Inseminadores.nome_inseminador.label('inseminador'),
+        Vacas.numero_animal,
+        Vacas.vaca,
+        Touros.nome_touro,
+        ProtocolosInseminacao.protocolo,
+        ResultadosInseminacao.numero_IATF,
+        db.case((ResultadosInseminacao.DG == 1, 'Sim'), else_='Não').label('prenha'),
+        db.case((ResultadosInseminacao.vazia_Com_Ou_Sem_CL == 1, 'Com CL'), else_='Sem CL').label('status_gestacional'),
+        db.case((ResultadosInseminacao.perda == 1, 'Sim'), else_='Não').label('perda_gestacional')
     ).join(
-        Vaca, ResultadoInseminacao.id_vaca == Vaca.id
+        Vacas, ResultadosInseminacao.id_vaca == Vacas.id
     ).join(
-        Fazenda, Vaca.id_fazenda == Fazenda.id
+        Fazendas, Vacas.id_fazenda == Fazendas.id
     ).join(
-        ProtocoloInseminacao, ResultadoInseminacao.id_protocolo == ProtocoloInseminacao.id
+        ProtocolosInseminacao, ResultadosInseminacao.id_protocolo == ProtocolosInseminacao.id
     ).join(
-        Touro, ResultadoInseminacao.id_touro == Touro.id
+        Touros, ResultadosInseminacao.id_touro == Touros.id
     ).join(
-        Inseminador, ResultadoInseminacao.id_inseminador == Inseminador.id
+        Inseminadores, ResultadosInseminacao.id_inseminador == Inseminadores.id
     ).order_by(
-        ResultadoInseminacao.data_inseminacao.desc()
+        ResultadosInseminacao.data_inseminacao.desc()
     ).all()
 
     return resultados

@@ -20,7 +20,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #   importação dos objetos
-from backend.database.modelos import Conversa, HistoricoConversa, Inseminador, Fazenda, Cliente, ProtocoloInseminacao, Touro, Produto, Vaca, Venda, ResultadoInseminacao
+from backend.database.modelos import Conversa, HistoricoConversa, Inseminadores, Fazendas, Clientes, ProtocolosInseminacao, Touros, Vacas, Vendas, ResultadosInseminacao
 
 # Inicializa o banco de dados com o aplicativo Flask
 db.init_app(app)
