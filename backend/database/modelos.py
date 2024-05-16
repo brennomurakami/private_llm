@@ -19,11 +19,20 @@ class HistoricoConversa(db.Model):
     idconversa = db.Column(db.Integer, db.ForeignKey('conversa.idconversa'), nullable=False)
     conversa = db.relationship('Conversa', backref=db.backref('historico', lazy=True))
 
+class Endereco(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    rua = db.Column(db.String(100))
+    numero = db.Column(db.Integer)
+    bairro = db.Column(db.String(100))
+    cidade = db.Column(db.String(100))
+    estado = db.Column(db.String(2))
+    pais = db.Column(db.String(100))
+
 class Fazendas(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome_fazenda = db.Column(db.String(100))
-    estado = db.Column(db.String(50))
-    municipio = db.Column(db.String(100))
+    id_cliente = db.Column(db.Integer, db.ForeignKey('clientes.id'))
+    id_endereco = db.Column(db.Integer, db.ForeignKey('endereco.id'))
 
 class Inseminadores(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,11 +40,10 @@ class Inseminadores(db.Model):
 
 class Clientes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    id_fazenda = db.Column(db.Integer, db.ForeignKey('fazendas.id'))
     nome_cliente = db.Column(db.String(100))
     email = db.Column(db.String(100))
     telefone = db.Column(db.String(20))
-    endereco = db.Column(db.String(200))
+    id_endereco = db.Column(db.Integer, db.ForeignKey('endereco.id'))
 
 class ProtocolosInseminacao(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -98,3 +106,19 @@ class Visitas(db.Model):
     id_fazenda = db.Column(db.Integer, db.ForeignKey('fazendas.id'), nullable=False)
     data_visita = db.Column(db.Date, nullable=False)
     fazenda = db.relationship('Fazendas', backref=db.backref('visitas', lazy=True))
+
+class Produtos(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nome = db.Column(db.String(100))
+    quantidade = db.Column(db.Integer)
+    touro = db.Column(db.Integer, db.ForeignKey('touros.id'))
+    preco = db.Column(db.Numeric(10, 2))
+    vendas = db.relationship('Vendas', secondary='item_venda', backref=db.backref('produtos', lazy=True))
+
+class ItemVenda(db.Model):
+    vendas_id = db.Column(db.Integer, db.ForeignKey('vendas.id'), primary_key=True)
+    produto_id = db.Column(db.Integer, db.ForeignKey('produtos.id'), primary_key=True)
+    quantidade = db.Column(db.Integer)
+    vendas_relacao = db.relationship('Vendas', backref=db.backref('itens_venda', lazy=True))
+    produtos_relacao = db.relationship('Produtos', backref=db.backref('itens_venda', lazy=True))
+

@@ -98,11 +98,11 @@ def gerar_resposta():
         print(ultima_mensagem)
 
         # Verifica se a última mensagem contém a solicitação por 'FUNCOES NECESSÁRIAS'
-        if 'FUNCOES NECESSARIAS:' in ultima_mensagem:
+        if 'CODIGO SQL1:' in ultima_mensagem:
             # Chama a função para formular a resposta com base nas funções necessárias
             print('Chamando função')
             print(ultima_mensagem)
-            pergunta = formular_resposta(ultima_mensagem)
+            pergunta = processar_sql(ultima_mensagem)
         else:
             # Atribui a resposta diretamente caso não seja solicitado as funções necessárias
             resposta = ultima_mensagem
