@@ -1,10 +1,14 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_file
 import sys
 import os
 from dotenv import load_dotenv
 from backend.gpt import client, assistant
 from backend.consultas import *
 from sql import *
+from backend.file import allowed_file
+from langchain_community.vectorstores import FAISS
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings
 
 # Adiciona o diretório raiz do projeto ao caminho de pesquisa de módulos
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -29,39 +33,12 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
+arquivo_salvo = None
+embeddings = OpenAIEmbeddings()
+
 @app.route('/')
 def index():
     return render_template('index.html')
-
-# @app.route('/gerar-resposta', methods=['POST'])
-# def gerar_resposta():
-#     pergunta = request.form['pergunta']
-#     thread = request.form['thread']
-#     print('thread recebida:', thread)
-    
-#     message = client.beta.threads.messages.create(
-#     thread_id=thread,
-#     role="user",
-#     content=pergunta
-#     )
-
-#     run = client.beta.threads.runs.create_and_poll(
-#     thread_id=thread,
-#     assistant_id=assistant.id
-#     )
-
-#     if run.status == 'completed': 
-#         messages = client.beta.threads.messages.list(
-#         thread_id=thread
-#         )
-#         # print(messages)
-#     else:
-#         print(run.status)
-
-#     resposta = messages.data[0].content[0].text.value
-#     print(resposta)
-
-#     return jsonify({'resposta': resposta})
 
 @app.route('/gerar-resposta', methods=['POST'])
 def gerar_resposta():
@@ -213,6 +190,36 @@ def alterar_nome_card():
         return 'Nome do card alterado com sucesso.', 200
     else:
         return 'Card não encontrado no banco de dados.', 404
+    
+@app.route('/upload-arquivo', methods=['POST'])
+def upload_arquivo():
+    if 'file' not in request.files:
+        return 'Nenhum arquivo enviado.', 400
+    
+    arquivo = request.files['file']
+    
+    # Verifica se o usuário não selecionou nenhum arquivo
+    if arquivo.filename == '':
+        return 'Nenhum arquivo selecionado.', 400
+    
+    # Verifica se o arquivo é permitido
+    if arquivo and allowed_file(arquivo.filename):
+        # Aqui você pode salvar o arquivo em uma variável ou fazer qualquer processamento necessário
+        arquivo_bytes = arquivo.read()  # Lê o conteúdo do arquivo
+
+        text_splitter = RecursiveCharacterTextSplitter()
+        documents = text_splitter.split_documents(arquivo_bytes)
+        vector = FAISS.from_documents(documents, embeddings)
+
+        global arquivo_salvo
+        arquivo_salvo = vector
+        print(arquivo_salvo)
+        
+        # Agora você pode fazer o que quiser com o arquivo, como salvar em um banco de dados, processá-lo, etc.
+        
+        return 'Arquivo enviado com sucesso.', 200
+    else:
+        return 'Tipo de arquivo não permitido.', 400
 
 
 if __name__ == '__main__':

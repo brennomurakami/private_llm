@@ -394,3 +394,37 @@ function toggleTheme() {
         themeBtn.textContent = 'dark_mode'
     }
 }
+
+// Adiciona o evento de clique ao elemento 'file-span'
+document.getElementById('file-span').addEventListener('click', function() {
+    // Clica no elemento 'file-input' para abrir a caixa de diálogo de seleção de arquivo
+    document.getElementById('file-input').click();
+});
+
+// Adiciona o evento de alteração ao elemento 'file-input' para lidar com a seleção do arquivo
+document.getElementById('file-input').addEventListener('change', function(event) {
+    const file = event.target.files[0];  // Obtém o arquivo selecionado
+
+    // Crie um objeto FormData para enviar o arquivo
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // Envie o arquivo para o servidor Flask usando Fetch
+    fetch('/upload-arquivo', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro ao enviar o arquivo.');
+        }
+        return response.text();
+    })
+    .then(data => {
+        console.log(data); // Log da resposta do servidor
+        // Faça qualquer outra coisa que você queira fazer após enviar o arquivo
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+    });
+});
