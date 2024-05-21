@@ -5,10 +5,13 @@ from dotenv import load_dotenv
 from backend.gpt import client, assistant
 from backend.consultas import *
 from sql import *
-from backend.file import allowed_file
+from backend.file import *
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
+from PyPDF2 import PdfReader
+import json
+import dill
 
 # Adiciona o diretório raiz do projeto ao caminho de pesquisa de módulos
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -193,6 +196,7 @@ def alterar_nome_card():
     
 @app.route('/upload-arquivo', methods=['POST'])
 def upload_arquivo():
+    print("Função chamada")
     if 'file' not in request.files:
         return 'Nenhum arquivo enviado.', 400
     
@@ -205,15 +209,20 @@ def upload_arquivo():
     # Verifica se o arquivo é permitido
     if arquivo and allowed_file(arquivo.filename):
         # Aqui você pode salvar o arquivo em uma variável ou fazer qualquer processamento necessário
-        arquivo_bytes = arquivo.read()  # Lê o conteúdo do arquivo
+        # arquivo_bytes = arquivo.read()  # Lê o conteúdo do arquivo
+        # arquivo_texto = arquivo_bytes.decode('utf-8')
 
-        text_splitter = RecursiveCharacterTextSplitter()
-        documents = text_splitter.split_documents(arquivo_bytes)
-        vector = FAISS.from_documents(documents, embeddings)
+        # print(arquivo_texto)
+        extensao = arquivo.filename.rsplit('.', 1)[-1].lower()
+
+        if(extensao == 'pdf'):
+            processedPdf = process_pdf(arquivo)
+            vectors = FAISS.from_texts(processedPdf, embeddings)
+            print(vectors)
+        print("Arquivo salvo")
 
         global arquivo_salvo
-        arquivo_salvo = vector
-        print(arquivo_salvo)
+        arquivo_salvo = vectors
         
         # Agora você pode fazer o que quiser com o arquivo, como salvar em um banco de dados, processá-lo, etc.
         
