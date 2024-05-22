@@ -73,12 +73,13 @@ def gerar_resposta():
         print(ultima_mensagem)
 
         # Verifica se a última mensagem contém a solicitação por 'FUNCOES NECESSÁRIAS'
-        if 'CODIGO SQL1:' in ultima_mensagem:
+        if 'SQL1:' in ultima_mensagem:
             # Chama a função para formular a resposta com base nas funções necessárias
-            print('Chamando função')
+            print('Consultando banco')
             print(ultima_mensagem)
             pergunta = processar_sql(ultima_mensagem)
-        elif 'FAISS1' in ultima_mensagem:
+        elif 'FAISS1:' in ultima_mensagem:
+                print('Consultando base de dados vetorizada')
                 resultados_similares = procurar_similaridade(pergunta)
                 pergunta = " ".join(resultados_similares)
 

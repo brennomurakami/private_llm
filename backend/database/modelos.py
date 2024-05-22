@@ -86,6 +86,7 @@ class Vendas(db.Model):
     data_venda = db.Column(db.Date)
     valor_total = db.Column(db.Numeric(10,2))
     id_vendedor = db.Column(db.Integer, db.ForeignKey('vendedores.id'))
+    id_protocolo= db.Column(db.Integer, db.ForeignKey('protocolos_inseminacao.id'))
 
 class ResultadosInseminacao(db.Model):
     id = db.Column(db.Integer, primary_key=True)
