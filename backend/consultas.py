@@ -9,9 +9,6 @@ from appgpt import db
 from backend.database.modelos import Conversa, HistoricoConversa, Inseminadores, Fazendas, Clientes, ProtocolosInseminacao, Touros, Vacas, Vendas, ResultadosInseminacao
 
 def processar_sql(mensagem):
-    from sqlalchemy.orm import sessionmaker
-    from sqlalchemy.sql import text
-
     # Extrai o código SQL da mensagem
     codigo_sql = mensagem.split("CODIGO SQL1:")
     codigo_sql = " ".join(codigo_sql).replace("CODIGO SQL1:", "").strip()

@@ -9,7 +9,7 @@ key = os.getenv('API_KEY')
 client = OpenAI(api_key = key)
 
 class assistant:
-  id = 'asst_TQUU0fCfwEj13afDFlrrQt2P'
+  id = 'asst_1KLjn4O0cqdyptOViOGVFU8I'
 
   '''
 
@@ -35,6 +35,9 @@ instrucoes = 'Você possui 3 perfis: veterinário, especialista em vendas e poet
     - Tabela item_venda: vendas_id, produto_id, quantidade\
     - Tabela endereco: id, rua, numero, bairro, cidade, estado, pais\
     Caso seja um código SQL na resposta retorne CODIGO SQL1: codigo sql aqui \n\
+    Caso precise de algum dado dos dados vetorizados envie na resposta: FAISS1: e devolva os pontos importantes da mensagem do usuario para buscar no vectordatabase\
+    Caso seja impossivel achar a informações apenas informe ao usuario, não invente questões ou consultas que não existem\
+    ATENÇÃO APENAS 1 CONSULTA POR VEZ.\
     atenção caso seja necessário o código sql retorne como resposta só "CODIGO SQL1: pedido do sql" e nada mais, e fique esperando a resposta, escreva igual está ali sem colocar acentos\
     Outro detalhe importante, para cada resposta eu quero que você escreva bem contextualizada, por exemplo se a resposta da query for ((Zeca,),), você deve falar "o touro mais utilizado até então foi o zeca"'
 

@@ -9,9 +9,7 @@ from backend.file import *
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
-from PyPDF2 import PdfReader
-import json
-import dill
+from backend.file import verificar_e_atualizar_indice
 
 # Adiciona o diretório raiz do projeto ao caminho de pesquisa de módulos
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -35,9 +33,6 @@ db.init_app(app)
 # Cria todas as tabelas do banco de dados
 with app.app_context():
     db.create_all()
-
-arquivo_salvo = None
-embeddings = OpenAIEmbeddings()
 
 @app.route('/')
 def index():
@@ -83,6 +78,10 @@ def gerar_resposta():
             print('Chamando função')
             print(ultima_mensagem)
             pergunta = processar_sql(ultima_mensagem)
+        elif 'FAISS1' in ultima_mensagem:
+                resultados_similares = procurar_similaridade(pergunta)
+                pergunta = " ".join(resultados_similares)
+
         else:
             # Atribui a resposta diretamente caso não seja solicitado as funções necessárias
             resposta = ultima_mensagem
@@ -201,30 +200,20 @@ def upload_arquivo():
         return 'Nenhum arquivo enviado.', 400
     
     arquivo = request.files['file']
-    
-    # Verifica se o usuário não selecionou nenhum arquivo
+
     if arquivo.filename == '':
         return 'Nenhum arquivo selecionado.', 400
-    
+
     # Verifica se o arquivo é permitido
     if arquivo and allowed_file(arquivo.filename):
-        # Aqui você pode salvar o arquivo em uma variável ou fazer qualquer processamento necessário
-        # arquivo_bytes = arquivo.read()  # Lê o conteúdo do arquivo
-        # arquivo_texto = arquivo_bytes.decode('utf-8')
+        print("Arquivo salvo com sucesso")
 
         # print(arquivo_texto)
         extensao = arquivo.filename.rsplit('.', 1)[-1].lower()
 
         if(extensao == 'pdf'):
-            processedPdf = process_pdf(arquivo)
-            vectors = FAISS.from_texts(processedPdf, embeddings)
-            print(vectors)
-        print("Arquivo salvo")
-
-        global arquivo_salvo
-        arquivo_salvo = vectors
-        
-        # Agora você pode fazer o que quiser com o arquivo, como salvar em um banco de dados, processá-lo, etc.
+            verificar_e_atualizar_indice(arquivo)
+            print("Arquivo salvo no banco vetorizado")
         
         return 'Arquivo enviado com sucesso.', 200
     else:
