@@ -9,7 +9,7 @@ key = os.getenv('API_KEY')
 client = OpenAI(api_key = key)
 
 class assistant:
-  id = 'asst_GFeNAWI1vDVosn3cW1qOAsV4'
+  id = 'asst_8dZmPoQiKTMkaxUjMuS6uUuc'
 
 '''
 

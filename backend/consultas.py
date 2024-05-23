@@ -6,12 +6,13 @@ from sqlalchemy.sql import text
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from appgpt import db
-from backend.database.modelos import Conversa, HistoricoConversa, Inseminadores, Fazendas, Clientes, ProtocolosInseminacao, Touros, Vacas, Vendas, ResultadosInseminacao
 
 def processar_sql(mensagem):
     # Extrai o código SQL da mensagem
-    codigo_sql = mensagem.split("CODIGO SQL1:")
-    codigo_sql = " ".join(codigo_sql).replace("CODIGO SQL1:", "").strip()
+    codigo_sql = mensagem.split("CODIGO SQL121:")
+    codigo_sql = " ".join(codigo_sql)
+    codigo_sql = codigo_sql.replace("```", "").strip()
+    codigo_sql = codigo_sql.replace("CODIGO SQL121:", "").strip()
     
     # Mantém apenas a parte da string que começa com "SELECT"
     codigo_sql = codigo_sql[codigo_sql.find("SELECT"):]

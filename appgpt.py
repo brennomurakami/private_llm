@@ -25,7 +25,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #   importação dos objetos
-from backend.database.modelos import Conversa, HistoricoConversa, Inseminadores, Fazendas, Clientes, ProtocolosInseminacao, Touros, Vacas, Vendas, ResultadosInseminacao
+from backend.database.modelos import Conversa, HistoricoConversa
 
 # Inicializa o banco de dados com o aplicativo Flask
 db.init_app(app)
@@ -73,14 +73,14 @@ def gerar_resposta():
         print(ultima_mensagem)
 
         # Verifica se a última mensagem contém a solicitação por 'FUNCOES NECESSÁRIAS'
-        if 'SQL1:' in ultima_mensagem:
+        if 'SQL121:' in ultima_mensagem:
             # Chama a função para formular a resposta com base nas funções necessárias
             print('Consultando banco')
             print(ultima_mensagem)
             pergunta = processar_sql(ultima_mensagem)
-        elif 'FAISS1:' in ultima_mensagem:
+        elif 'VECTOR121:' in ultima_mensagem:
                 print('Consultando base de dados vetorizada')
-                resultados_similares = procurar_similaridade(pergunta)
+                resultados_similares = procurar_similaridade(ultima_mensagem)
                 pergunta = " ".join(resultados_similares)
 
         else:
