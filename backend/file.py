@@ -65,7 +65,7 @@ def verificar_e_atualizar_indice(files):
     return vector_store
 
 def procurar_similaridade(query):
-    query.split('FAISS1')
+    query.split('VECTOR121:')
     print("CHEGOU")
     print('query', query)
     query_embedding = embeddings.embed_query(query)
@@ -76,7 +76,7 @@ def procurar_similaridade(query):
     print('VETOR: ', vector_store)
     query_embedding_str = "".join(str(query_embedding))
     print("VETOR STRING: ", query_embedding_str)
-    resultados = vector_store.similarity_search(query=query_embedding_str, k=2)
+    resultados = vector_store.similarity_search(query=query_embedding_str, k=3)
     textos_resultados = [limpar_texto(doc.page_content) for doc in resultados]
     print("RESULTADOS: ", textos_resultados)
     return textos_resultados
